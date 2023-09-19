@@ -19,3 +19,16 @@ let recipe3 = {
 };
 
 recipeList.push(recipe1,recipe2,recipe3);
+
+// Loop through recipeList and display recipes with ingredients and instructions
+for (let i = 0; i < recipeList.length; i++) {
+    let recipe = recipeList[i];
+    let recipeInfo = recipe.name + ' (Ingredients: ' + recipe.ingredients.join(', ') + ') <br>- Instructions: ' + recipe.instructions + ' Ready to serve!';
+    // Display the recipe information using document.write
+    document.write(recipeInfo + '<br>');
+    
+    // Add a conditional to highlight recipes with 'egg' in the ingredients
+    if (recipe.ingredients.some(ingredient => ingredient.includes('egg'))) {
+        document.write(" - Yes, the recipe contains egg!<br>");
+    }
+}
