@@ -21,14 +21,31 @@ let recipe3 = {
 recipeList.push(recipe1,recipe2,recipe3);
 
 // Loop through recipeList and display recipes with ingredients and instructions
+/*
 for (let i = 0; i < recipeList.length; i++) {
     let recipe = recipeList[i];
     let recipeInfo = recipe.name + ' (Ingredients: ' + recipe.ingredients.join(', ') + ') <br>- Instructions: ' + recipe.instructions + ' Ready to serve!';
     // Display the recipe information using document.write
     document.write(recipeInfo + '<br>');
     
-    // Add a conditional to highlight recipes with 'egg' in the ingredients
-    if (recipe.ingredients.some(ingredient => ingredient.includes('egg'))) {
+    //-------- Add a conditional to highlight recipes with 'egg' in the ingredients example -------------
+    /* 
+    //let hasEgg = recipe.ingredients.some(function(ingredient) {
+        return ingredient.includes('egg');
+    });
+    //if (hasEgg) {
+        document.write(" - Yes, the recipe contains egg!<br>");
+    }
+    
+    if (recipe.ingredients.some(ingredient => ingredient.includes('egg'))) { // arrow function
         document.write(" - Yes, the recipe contains egg!<br>");
     }
 }
+*/
+
+recipeList.forEach(function (recipe) {
+    document.write('Name: ' + recipe.name + '<br>' + 
+    'Ingredients: ' + recipe.ingredients.join(', ') +'<br>' + 
+    'Instructions: ' + recipe.instructions + '<br><br>');
+});
+
