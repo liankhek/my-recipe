@@ -46,57 +46,59 @@ let recipeRepository = (function () {
       }
     ];
   
-    return {
-      add: function (recipe) {
-        recipeList.push(recipe);
-      },
 
-      addn: function (recipe){
-        if (typeof recipe === 'object'){
-          let expectedKeys = ['name', 'ingredients', 'instructions'];
-          let keyMatch = expectedKeys.every(function(key){
-            return Object.keys(recipe).includes(key);
-          });
-          if (keyMatch) {
-            recipeList.push(recipe);
-          }
-          else {
-            console.error ('Invalid recipe! Please provide a recipe(object) with the keys: names, ingredients, instructions.');
-          }
-        }
-        else {
-          console.error('Invalid input! Please provide a valid recipe object.');
-        }
-      },
-
-      getAll: function () {
-        return recipeList;
-      },
-
-      findByName: function () {
-        return recipeList.find(function (recipe){
-          return recipe.name === name;
-        });
-      },
-      
-      filterByProperty: function (property, value) {
-        return recipeList.filter(function (recipe) {
-          return recipe[property] === value;
-        });
-      }
+    function add (recipe) {
+      recipeList.push(recipe);
     }
+
+    function addn (recipe){
+      if (typeof recipe === 'object' && 'name' in recipe && 'ingredients' in recipe && 'instructions' in recipe) {
+        recipeList.push(recipe);
+      } else {
+        console.log('Invalid recipe! Please provide a recipe (object) with the keys: name, ingredients, instructions.');
+      }
+    }  
+
+    function getAll() {
+      return recipeList;
+    }
+
+    function findByName(name) {
+      return recipeList.find(function (recipe){
+        return recipe.name === name;
+      });
+    }
+    
+    function filterByProperty(property, value) {
+      return recipeList.filter(function (recipe) {
+        return recipe[property] === value;
+      });
+    }
+
+    return {
+      add: add,
+      addn: addn,
+      getAll: getAll,
+      findByName: findByName,
+      filterByProperty: filterByProperty
+    };
   })();
 
   let newRecipe = {
     name: 'Alfredo spaghetti',
     ingredients: ['Spaghetti', 'chicken', 'cheese', 'Alfredo'],
     instructions: 'Cook spaghetti, grill chicken, cheese, add alfredo and ready to be served.'
-  }
+  };
 
   recipeRepository.addn(newRecipe);
 
-  let filteredRecipes = recipeRepository.filterByProperty ('name', 'Fried rice');
-  console.log ('Filtered Recipes:', filteredRecipes);
+  let filteredRecipes = recipeRepository.filterByProperty('name', 'Alfredo spaghetti');
+  document.write('<Strong>Filtered Recipes</Strong><br>');
+  filteredRecipes.forEach(function (recipe) {
+    document.write('Name: ' + recipe.name + '<br>' +
+    'Ingredients: ' + recipe.ingredients.join(', ') + '<br>' +
+    'Instructions: ' + recipe.instructions + '<br><br>');
+});
   
   recipeRepository.getAll().forEach(function (recipe) {
     document.write('Name: ' + recipe.name + '<br>' + 
