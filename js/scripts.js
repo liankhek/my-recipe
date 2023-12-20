@@ -52,7 +52,12 @@ let recipeRepository = (function () {
     }
 
     function addn (recipe){
-      if (typeof recipe === 'object' && 'name' in recipe && 'ingredients' in recipe && 'instructions' in recipe) {
+      if (
+        typeof recipe === 'object' &&
+        'name' in recipe &&
+        'ingredients' in recipe &&
+        'instructions' in recipe
+        ) {
         recipeList.push(recipe);
       } else {
         console.log('Invalid recipe! Please provide a recipe (object) with the keys: name, ingredients, instructions.');
@@ -75,15 +80,51 @@ let recipeRepository = (function () {
       });
     }
 
+    /* creating name lists with button */
+    function btnRecipeList (recipe){
+      let unorderlist = document.querySelector ('.recipe_list');
+      let list = document.createElement ('li');
+      let button = document.createElement ('button');
+      button.innerText = recipe.name;
+      button.classList.add('button_list');
+      list.appendChild(button);
+      unorderlist.appendChild(list);
+
+      // Add event listener to the button
+      button.addEventListener('click', function(){
+        showDetails(recipe);
+      });
+      // OR use the following method instead
+
+      /* Call the new function to add the event listener
+      btnEventListener(button, recipe);  */
+    }
+
+    /** Create button event listener function 
+   
+    function btnEventListener (button, recipe){
+      button.addEventListener('click', function(){
+        showDetails(recipe);
+      });
+    }
+    */
+
+    function showDetails(recipe) {
+      console.log(recipe);
+    }
+
+
     return {
       add: add,
       addn: addn,
       getAll: getAll,
       findByName: findByName,
-      filterByProperty: filterByProperty
+      filterByProperty: filterByProperty,
+      btnRecipeList: btnRecipeList
     };
   })();
 
+  /** add new recipe */
   let newRecipe = {
     name: 'Alfredo spaghetti',
     ingredients: ['Spaghetti', 'chicken', 'cheese', 'Alfredo'],
@@ -91,6 +132,9 @@ let recipeRepository = (function () {
   };
 
   recipeRepository.addn(newRecipe);
+/** recipeRepository.addn ({ name: "Spaghetti", ingredients: ["chicken", "cheese"], instructions: "Coock and ready" })
+ * console.log(recipeRepository.getAll());
+ */
 
   let filteredRecipes = recipeRepository.filterByProperty('name', 'Alfredo spaghetti');
   document.write('<Strong>Filtered Recipes</Strong><br>');
@@ -101,9 +145,7 @@ let recipeRepository = (function () {
 });
   
   recipeRepository.getAll().forEach(function (recipe) {
-    document.write('Name: ' + recipe.name + '<br>' + 
-      'Ingredients: ' + recipe.ingredients.join(', ') + '<br>' + 
-      'Instructions: ' + recipe.instructions + '<br><br>');
+    recipeRepository.btnRecipeList(recipe);
   });
 
 
