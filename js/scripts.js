@@ -24,129 +24,120 @@ for (let i = 0; i < recipeList.length; i++) {
     }
 }
 */
+
 let recipeRepository = (function () {
-    let recipeList = [
-  
-      {
-        name: 'Fried rice',
-        ingredients: ['Cooked rice', '1 egg', 'garlic', 'black pepper', 'salt', 'oil'],
-        instructions: 'Fry garlic and egg, add rice, finish up with black pepper and ready to be served.'
-      },
-    
-      {
-        name: 'Vegetable',
-        ingredients: ['any Vege', 'garlic', 'onion', 'salt', 'oyster sauce', 'oil'],
-        instructions: 'Stir-fry garlic and onion, add oyster sauce, and ready to be served.'
-      },
-    
-      {
-        name: 'Egg-Drop soup',
-        ingredients: ['1 egg', 'water', 'black pepper', 'salt'],
-        instructions: 'Boil water, add egg and salt, finish up with black pepper and ready to be served.'
-      }
-    ];
-  
+  let recipeList = [];
+  let apiUrl = 'https://www.themealdb.com/api/json/v1/1/categories.php';
 
-    function add (recipe) {
+  function add(recipe) {
+    if (
+      typeof recipe === "object" &&
+      "strCategory" in recipe
+    ) {
       recipeList.push(recipe);
+    } else {
+      console.log("Recipe is not correct");
     }
+  }
 
-    function addn (recipe){
-      if (
-        typeof recipe === 'object' &&
-        'name' in recipe &&
-        'ingredients' in recipe &&
-        'instructions' in recipe
-        ) {
-        recipeList.push(recipe);
-      } else {
-        console.log('Invalid recipe! Please provide a recipe (object) with the keys: name, ingredients, instructions.');
-      }
-    }  
+  function getAll() {
+    return recipeList;
+  }
 
-    function getAll() {
-      return recipeList;
-    }
-
-    function findByName(name) {
-      return recipeList.find(function (recipe){
-        return recipe.name === name;
-      });
-    }
-    
-    function filterByProperty(property, value) {
-      return recipeList.filter(function (recipe) {
-        return recipe[property] === value;
-      });
-    }
-
-    /* creating name lists with button */
-    function btnRecipeList (recipe){
-      let unorderlist = document.querySelector ('.recipe_list');
-      let list = document.createElement ('li');
-      let button = document.createElement ('button');
-      button.innerText = recipe.name;
-      button.classList.add('button_list');
-      list.appendChild(button);
-      unorderlist.appendChild(list);
-
+/* creating Category lists with button */
+  function addListItem(recipe) {
+    let recipeListContainer = document.querySelector(".recipe-list");
+    let listItem = document.createElement("li");
+    let button = document.createElement("button");
+    button.innerText = recipe.strCategory;
+    button.classList.add("button-list");
+    listItem.appendChild(button);
+    recipeListContainer.appendChild(listItem);
       // Add event listener to the button
-      button.addEventListener('click', function(){
-        showDetails(recipe);
-      });
-      // OR use the following method instead
+    button.addEventListener("click", function(event) {
+      showDetails(recipe);
+    });
+  }
+  // OR use the following method instead
 
-      /* Call the new function to add the event listener
-      btnEventListener(button, recipe);  */
-    }
+  /* Call the new function to add the event listener
+  btnEventListener(button, recipe);  */
 
-    /** Create button event listener function 
-   
-    function btnEventListener (button, recipe){
-      button.addEventListener('click', function(){
-        showDetails(recipe);
-      });
-    }
-    */
-
-    function showDetails(recipe) {
-      console.log(recipe);
-    }
-
-
-    return {
-      add: add,
-      addn: addn,
-      getAll: getAll,
-      findByName: findByName,
-      filterByProperty: filterByProperty,
-      btnRecipeList: btnRecipeList
-    };
-  })();
-
-  /** add new recipe */
-  let newRecipe = {
-    name: 'Alfredo spaghetti',
-    ingredients: ['Spaghetti', 'chicken', 'cheese', 'Alfredo'],
-    instructions: 'Cook spaghetti, grill chicken, cheese, add alfredo and ready to be served.'
-  };
-
-  recipeRepository.addn(newRecipe);
-/** recipeRepository.addn ({ name: "Spaghetti", ingredients: ["chicken", "cheese"], instructions: "Coock and ready" })
- * console.log(recipeRepository.getAll());
- */
-
-  let filteredRecipes = recipeRepository.filterByProperty('name', 'Alfredo spaghetti');
-  document.write('<Strong>Filtered Recipes</Strong><br>');
-  filteredRecipes.forEach(function (recipe) {
-    document.write('Name: ' + recipe.name + '<br>' +
-    'Ingredients: ' + recipe.ingredients.join(', ') + '<br>' +
-    'Instructions: ' + recipe.instructions + '<br><br>');
-});
-  
-  recipeRepository.getAll().forEach(function (recipe) {
-    recipeRepository.btnRecipeList(recipe);
+/** Create button event listener function 
+ * 
+function btnEventListener (button, recipe){
+  button.addEventListener('click', function(){
+    showDetails(recipe);
   });
+}
+*/
 
+  function loadList() {
+    return fetch(apiUrl)
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (json) {
+        json.categories.forEach(function (item) {
+          let recipe = {
+            strCategory: item.strCategory,
+            strCategoryDescription: item.strCategoryDescription
+          };
+          add(recipe);
+          console.log(recipe);
+        });
+      })
+      .catch(function (e) {
+        console.error(e);
+      });
+  }
+  
+  function loadDetails(item) {
+    let apiUrlDetails = 'https://www.themealdb.com/api/json/v1/1/filter.php?c=${item.strCategory}';
+    return fetch(apiUrlDetails)
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (details) {
+        // add the details to the item
+        item.meals = details.meals;
+      })
+      .catch(function (e) {
+        console.error(e);
+      });
+  }
 
+  function showDetails(item) {
+    recipeRepository.loadDetails(item).then(function () {
+      console.log(item);
+    });
+  }
 
+/*
+  function findByName(name) {
+    return mealsList.find(function (meal){
+      return meal.strCategory === name;
+    });
+  }
+  
+  function filterByProperty(property, value) {
+    return mealsList.filter(function (meal) {
+      return meal[property] === value;
+    });
+  } */
+
+  return {
+    add: add,
+    getAll: getAll,
+    addListItem: addListItem,
+    loadList: loadList,
+    loadDetails: loadDetails,
+    showDetails: showDetails
+  };
+})();
+
+recipeRepository.loadList().then(function () {
+  recipeRepository.getAll().forEach(function (recipe) {
+    recipeRepository.addListItem(recipe);
+  });
+});
