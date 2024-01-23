@@ -101,7 +101,7 @@ function btnEventListener (button, recipe){
       .then(function (details) {
         // Add details to the item
         item.meals = details.meals;
-        // Log the details (you can display it in the interface in the next steps)
+        // Log the details
         console.log(item.strCategoryDescription);
       })
       .catch(function (e) {
