@@ -46,11 +46,11 @@ let recipeRepository = (function () {
 
 /* creating Category lists with button */
   function addListItem(recipe) {
-    let recipeListContainer = document.querySelector(".recipe-list");
+    let recipeListContainer = document.querySelector(".recipe_list");
     let listItem = document.createElement("li");
     let button = document.createElement("button");
     button.innerText = recipe.strCategory;
-    button.classList.add("button-list");
+    button.classList.add("button_list");
     listItem.appendChild(button);
     recipeListContainer.appendChild(listItem);
       // Add event listener to the button
@@ -93,19 +93,22 @@ function btnEventListener (button, recipe){
   }
   
   function loadDetails(item) {
-    let apiUrlDetails = 'https://www.themealdb.com/api/json/v1/1/filter.php?c=${item.strCategory}';
+    let apiUrlDetails = `https://www.themealdb.com/api/json/v1/1/filter.php?c=${item.strCategory}`;
     return fetch(apiUrlDetails)
       .then(function (response) {
         return response.json();
       })
       .then(function (details) {
-        // add the details to the item
+        // Add details to the item
         item.meals = details.meals;
+        // Log the details (you can display it in the interface in the next steps)
+        console.log(item.strCategoryDescription);
       })
       .catch(function (e) {
         console.error(e);
       });
   }
+
 
   function showDetails(item) {
     recipeRepository.loadDetails(item).then(function () {
