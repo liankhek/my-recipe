@@ -72,9 +72,25 @@ function btnEventListener (button, recipe){
 }
 */
 
+  function showLoadingMessage() {
+    let loadingMsg = document.createElement("div");
+    loadingMsg.innerText = "LOADING...Please Wait";
+    loadingMsg.classList.add("loading_message");
+    document.body.appendChild(loadingMsg);
+  }
+
+  function hideLoadingMessage() {
+    let loadingMsg = document.querySelector(".loading_message");
+    if (loadingMsg) {
+      loadingMsg.remove();
+    }
+  }
+
   function loadList() {
+    showLoadingMessage();
     return fetch(apiUrl)
       .then(function (response) {
+        hideLoadingMessage();
         return response.json();
       })
       .then(function (json) {
@@ -88,14 +104,17 @@ function btnEventListener (button, recipe){
         });
       })
       .catch(function (e) {
+        hideLoadingMessage();
         console.error(e);
       });
   }
   
   function loadDetails(item) {
+    showLoadingMessage();
     let apiUrlDetails = `https://www.themealdb.com/api/json/v1/1/filter.php?c=${item.strCategory}`;
     return fetch(apiUrlDetails)
       .then(function (response) {
+        hideLoadingMessage();
         return response.json();
       })
       .then(function (details) {
@@ -105,6 +124,7 @@ function btnEventListener (button, recipe){
         console.log(item.strCategoryDescription);
       })
       .catch(function (e) {
+        hideLoadingMessage();
         console.error(e);
       });
   }
@@ -133,6 +153,8 @@ function btnEventListener (button, recipe){
     add: add,
     getAll: getAll,
     addListItem: addListItem,
+    showLoadingMessage: showLoadingMessage,
+    hideLoadingMessage: hideLoadingMessage,
     loadList: loadList,
     loadDetails: loadDetails,
     showDetails: showDetails
