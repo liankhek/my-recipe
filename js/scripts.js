@@ -1,30 +1,5 @@
 
 
-
-
-// Loop through recipeList and display recipes with ingredients and instructions
-/*
-for (let i = 0; i < recipeList.length; i++) {
-    let recipe = recipeList[i];
-    let recipeInfo = recipe.name + ' (Ingredients: ' + recipe.ingredients.join(', ') + ') <br>- Instructions: ' + recipe.instructions + ' Ready to serve!';
-    // Display the recipe information using document.write
-    document.write(recipeInfo + '<br>');
-    
-    //-------- Add a conditional to highlight recipes with 'egg' in the ingredients example -------------
-    /* 
-    //let hasEgg = recipe.ingredients.some(function(ingredient) {
-        return ingredient.includes('egg');
-    });
-    //if (hasEgg) {
-        document.write(" - Yes, the recipe contains egg!<br>");
-    }
-    
-    if (recipe.ingredients.some(ingredient => ingredient.includes('egg'))) { // arrow function
-        document.write(" - Yes, the recipe contains egg!<br>");
-    }
-}
-*/
-
 let recipeRepository = (function () {
   let recipeList = [];
 
@@ -61,19 +36,7 @@ let recipeRepository = (function () {
       showDetails(recipe);
     });
   }
-  // OR use the following method instead
-
-  /* Call the new function to add the event listener
-  btnEventListener(button, recipe);  */
-
-/** Create button event listener function 
- * 
-function btnEventListener (button, recipe){
-  button.addEventListener('click', function(){
-    showDetails(recipe);
-  });
-}
-*/
+  
 // --------------------------Loading----------------
   function showLoadingMessage() {
     let loadingMsg = document.createElement("div");
@@ -90,54 +53,26 @@ function btnEventListener (button, recipe){
   }
 
   // ------------------- Modal ---------------------------
-  function showModal(title, description, image) {
-    modalContainer.innerHTML = '';
+  function showModal(item) {
+    let modalBody = $(".modal-body");
+    let modalTitle = $(".modal-title");
 
-    let modal = document.createElement('div');
-    modal.classList.add('modal');
+    modalTitle.empty();
+    modalBody.empty();
 
-    let closeButtonElement = document.createElement('button');
-    closeButtonElement.classList.add('modal-close');
-    closeButtonElement.innerText = 'Close';
-    closeButtonElement.addEventListener('click', hideModal);
+    //creating element for name in modal content
+    let nameElement = $("<h1>" + item.strCategory + "</h>");
+    // creating img in modal content
+    let imageElement = $('<img class ="modal-img" style="width:50%">');
+    imageElement.attr("src", item.strCategoryThumb);
+    
+    let descripElement = $("<p>" + "height : " + item.strCategoryDescription + "</p>");
+    
+    modalTitle.append(nameElement);
+    modalBody.append(imageElement);
+    modalBody.append(descripElement);
 
-    let titleElement = document.createElement('h1');
-    titleElement.innerText = title;
-
-    let descriptionElement = document.createElement('p');
-    descriptionElement.innerText = description;
-
-    let imageElement = document.createElement("img");
-    imageElement.setAttribute("src", image);
-    imageElement.setAttribute("width", "304");
-    imageElement.setAttribute("height", "228");
-    imageElement.setAttribute("alt", title);
-
-    modal.appendChild(closeButtonElement);
-    modal.appendChild(titleElement);
-    modal.appendChild(descriptionElement);
-    modal.appendChild(imageElement);
-    modalContainer.appendChild(modal);
-
-    modalContainer.classList.add('is-visible');
-  }
-
-  function hideModal() {
-    modalContainer.classList.remove('is-visible');
-  }
-
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modalContainer.classList.contains('is-visible')) {
-      hideModal();
-    }
-  });
-
-  modalContainer.addEventListener('click', (e) => {
-    let target = e.target;
-    if (target === modalContainer) {
-      hideModal();
-    }
-  });
+  }  
 
   //------------------- Load Lists & Details from API --------------------------
   function loadList() {
@@ -186,19 +121,6 @@ function btnEventListener (button, recipe){
     recipeRepository.loadDetails(item);
   }
 
-/*
-  function findByName(name) {
-    return mealsList.find(function (meal){
-      return meal.strCategory === name;
-    });
-  }
-  
-  function filterByProperty(property, value) {
-    return mealsList.filter(function (meal) {
-      return meal[property] === value;
-    });
-  } */
-
   return {
     add: add,
     getAll: getAll,
@@ -207,6 +129,7 @@ function btnEventListener (button, recipe){
     hideLoadingMessage: hideLoadingMessage,
     loadList: loadList,
     loadDetails: loadDetails,
+    showModal: showModal,
     showDetails: showDetails
   };
 })();
