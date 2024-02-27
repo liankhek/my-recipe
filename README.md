@@ -15,7 +15,7 @@ This project is a web application for managing and displaying menu categories. I
 - **View Details in Modal:**
   When a name is clicked, details for the item are loaded and displayed in a modal.
 
-  - **Search categories:**
+- **Search categories:**
   Search for a category in the search bar and it will be displayed .
 
 ## Libraries Used
