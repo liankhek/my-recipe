@@ -3,7 +3,7 @@
 let recipeRepository = (function () {
   let recipeList = [];
 
-  let apiUrl = 'https://www.themealdb.com/api/json/v1/1/categories.php';
+  let apiUrl = "https://www.themealdb.com/api/json/v1/1/categories.php";
 
 
   function add(item) {
@@ -24,7 +24,7 @@ let recipeRepository = (function () {
 
   // Function to filter categories by name
   function filterByName(name) {
-    let containerElement = document.querySelector('.row');
+    let containerElement = document.querySelector(".row");
     let itemNames = recipeList.map(item => item.name);
 
     itemNames.forEach((element) => {
@@ -37,18 +37,23 @@ let recipeRepository = (function () {
     });
   }
 
+  function removeAll(){
+    let recipeList = document.querySelector(".menu-list");
+    recipeList.innerHTML="";
+  }
+
 /* creating Category lists with button & Event listener */
   function addListItem(recipe) {
     let recipeList = document.querySelector(".menu-list");
     let listItem = document.createElement("li");
-    listItem.classList.add('list-group-item');
-    listItem.classList.add('col-12','col-sm-6','col-md-4','col-lg-4');
+    listItem.classList.add("list-group-item");
+    listItem.classList.add("col-12","col-sm-6","col-md-4","col-lg-4");
 
-    let button = document.createElement('button');
+    let button = document.createElement("button");
     button.innerHTML = recipe.strCategory;
-    button.classList.add('btn','btn-lg','btn-block', 'list-btn');
-    button.setAttribute('data-toggle', 'modal');
-    button.setAttribute('data-target', '#exampleModal');
+    button.classList.add("btn","btn-lg","btn-block", "list-btn");
+    button.setAttribute("data-toggle", "modal");
+    button.setAttribute("data-target", "#exampleModal");
     
     listItem.appendChild(button);
     recipeList.appendChild(listItem);
@@ -57,11 +62,10 @@ let recipeRepository = (function () {
   }
 
   function addEventListenerToButton(recipe, button) {
-    button.addEventListener('click', function() {
-      showDetails(recipe);
+    button.addEventListener("click", function() {
+      showModal(recipe);
     })
   }
-
 
 // --------------------------Loading----------------
   function showLoadingMessage() {
@@ -89,7 +93,7 @@ let recipeRepository = (function () {
     //creating element for name in modal content
     let nameElement = $("<h1>" + item.strCategory + "</h1>");
     // creating img in modal content
-    let imageElement = $('<img class ="modal-img" style="width:50%">');
+    let imageElement = $("<img class =\"modal-img\" style=\"width:50%\">");
     imageElement.attr("src", item.strCategoryThumb);
     
     let descripElement = $("<p>" + "Description : " + item.strCategoryDescription + "</p>");
@@ -103,7 +107,7 @@ let recipeRepository = (function () {
   //------------------- Load Lists & Details from API --------------------------
   function loadList(offset, limit) {
     showLoadingMessage();
-    let currentApi = apiUrl + '?offset=' + offset + '&limit=' + limit;
+    let currentApi = apiUrl + "?offset=" + offset + "&limit=" + limit;
     return fetch(currentApi)
       .then(function (response) {
         hideLoadingMessage();
@@ -125,43 +129,15 @@ let recipeRepository = (function () {
       });
   }
 
-  function loadDetails(item) {
-    showLoadingMessage();
-    return fetch(apiUrl)
-      .then(function (response) {
-        hideLoadingMessage();
-        return response.json();
-      })
-      .then(function (details) {
-          item.details = {
-          categoryId: matchingCategory.idCategory,
-          categoryThumb: matchingCategory.strCategoryThumb,
-          categoryDescription: matchingCategory.strCategoryDescription
-          }
-      })
-      .catch(function (e) {
-        hideLoadingMessage();
-        console.error(e);
-      });
-  }
-
-  // after details loaded from api, call function to display modal
-  function showDetails(item) {
-    loadDetails(item).then(function () {
-        showModal(item);
-    })
-}
-
   return {
     add: add,
     getAll: getAll,
     addListItem: addListItem,
     showLoadingMessage: showLoadingMessage,
     hideLoadingMessage: hideLoadingMessage,
-    filterByName: filterByName,
     loadList: loadList,
-    loadDetails: loadDetails,
-    showDetails: showDetails
+    filterByName: filterByName,
+    removeAll: removeAll,
   };
 })();
 
@@ -170,3 +146,17 @@ recipeRepository.loadList().then(function () {
     recipeRepository.addListItem(recipe);
   });
 });
+
+// find the element with an id(#search) everytime the key is inputed
+document.querySelector("#search").addEventListener("input", (e) => {
+  const searchText = e.target.value; // rearch the texts typed in
+  console.log("input", searchText);
+
+  recipeRepository.removeAll(); // then, remove all the categories
+
+  recipeRepository.getAll().forEach(function (recipe) { // get only math the categories
+    if (recipe.strCategory.toLowerCase().includes(searchText.toLowerCase())){
+    recipeRepository.addListItem(recipe);
+    }
+  });
+})
