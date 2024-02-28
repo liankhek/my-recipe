@@ -136,7 +136,6 @@ let recipeRepository = (function () {
     showLoadingMessage: showLoadingMessage,
     hideLoadingMessage: hideLoadingMessage,
     loadList: loadList,
-    filterByName: filterByName,
     removeAll: removeAll,
   };
 })();
